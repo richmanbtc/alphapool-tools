@@ -1,14 +1,18 @@
 bots:
   analyzer:
-    image: richmanbtc/alphapool-analyzer:v0.0.3
+    image: richmanbtc/alphapool-analyzer:v0.0.4
     cron: '1 * * * *'
+  pf-universal:
+    image: richmanbtc/alphapool-portfolio:v0.0.3
+    cron: '*/5 * * * *'
+    environment: {ALPHAPOOL_MODEL_ID: 'pf-universal'}
   example-model-rank:
-    image: richmanbtc/alphapool-model:v0.0.4
+    image: richmanbtc/alphapool-model:v0.0.6
     cron: '1 * * * *'
     environment: {ALPHAPOOL_MODEL_ID: 'example-model-rank'}
   example-model-portfolio:
-    image: richmanbtc/alphapool-model:v0.0.4
-    cron: '1 * * * *'
+    image: richmanbtc/alphapool-model:v0.0.6
+    cron: '*/5 * * * *'
     environment:
       ALPHAPOOL_MODEL_ID: 'example-model-portfolio'
       ALPHAPOOL_MODEL_PATH: 'data/example_model_portfolio.xz'

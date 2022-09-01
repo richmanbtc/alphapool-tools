@@ -6,6 +6,14 @@ const _ = require('lodash')
 const sleep = require('sleep-promise');
 
 async function schedule(botId) {
+    const config = getConfig();
+    const bot = config.bots[botId];
+    if (bot.environment && bot.environment.ALPHAPOOL_MODEL_ID) {
+        if (botId !== bot.environment.ALPHAPOOL_MODEL_ID) {
+            throw new Error('botId !== bot.environment.ALPHAPOOL_MODEL_ID')
+        }
+    }
+
     if (await _runJobsExists(botId)) {
         await _deleteRunJobs(botId)
         console.log('waiting for deletion...')
@@ -76,6 +84,7 @@ async function _ensureCreateRunJobs(botId) {
         botId,
         `--max-retries=0`,
         `--task-timeout=180s`,
+        `--memory=2048Mi`,
         `--image="${imageTag}"`,
         `--command="${bot.command || ''}"`,
         `--args="${(bot.args || []).join(',')}"`,

@@ -18,3 +18,8 @@ bot name (botId)
 
 - The name must use only lowercase alphanumeric characters and dashes, cannot begin or end with a dash, and cannot be longer than 63 characters.
 - This is gcloud constraint
+
+Application exec likely failed
+application failed to start: not available
+
+- I don't know what caused it, but I think it stopped happening when I added more memory.
