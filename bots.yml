@@ -1,0 +1,20 @@
+bots:
+  analyzer:
+    image: richmanbtc/alphapool-analyzer:v0.0.3
+    cron: '1 * * * *'
+  example-model-rank:
+    image: richmanbtc/alphapool-model:v0.0.4
+    cron: '1 * * * *'
+    environment: {ALPHAPOOL_MODEL_ID: 'example-model-rank'}
+  example-model-portfolio:
+    image: richmanbtc/alphapool-model:v0.0.4
+    cron: '1 * * * *'
+    environment:
+      ALPHAPOOL_MODEL_ID: 'example-model-portfolio'
+      ALPHAPOOL_MODEL_PATH: 'data/example_model_portfolio.xz'
+environment:
+  ALPHAPOOL_DATABASE_URL: ${DATABASE_URL}
+region: ${GC_REGION}
+cloudsqlInstances: ${GC_CLOUDSQL_INSTANCES}
+projectId: ${GC_PROJECT_ID}
+serviceAccount: ${GC_SERVICE_ACCOUNT}

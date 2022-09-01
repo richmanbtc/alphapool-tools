@@ -1,0 +1,15 @@
+{
+  "name": "alphapool-tools",
+  "version": "1.0.0",
+  "author": "alphapool",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "@google-cloud/cloudbuild": "^3.1.0",
+    "commander": "^9.4.0",
+    "dotenv": "^16.0.2",
+    "lodash": "^4.17.21",
+    "open": "^8.4.0",
+    "sleep-promise": "^9.1.0",
+    "yaml-env-defaults": "^1.1.5"
+  }
+}

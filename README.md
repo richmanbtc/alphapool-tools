@@ -1,0 +1,20 @@
+
+docker image build
+
+- Only gcp repositories can be specified for cloud run images.
+- Minor images, such as those built by myself, cannot be retrieved by mirror.gcr.io
+- So I decided to build with cloud build
+
+hanging
+
+- execute the hanging command by hand
+
+scheduler failed by unauthorized error
+
+- see --oauth-service-account-email in https://cloud.google.com/run/docs/execute/jobs-on-schedule
+- set GC_SERVICE_ACCOUNT env var
+
+bot name (botId)
+
+- The name must use only lowercase alphanumeric characters and dashes, cannot begin or end with a dash, and cannot be longer than 63 characters.
+- This is gcloud constraint
