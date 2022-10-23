@@ -4,6 +4,7 @@ const {schedule} = require('./schedule')
 const {buildImage} = require("./build");
 const open = require('open');
 const {getConfig} = require("./config");
+const _ = require('lodash');
 
 require('dotenv').config();
 
@@ -38,6 +39,15 @@ program.command('schedule')
     .argument('<string>', 'bot name defined in config')
     .action((str) => {
         schedule(str)
+    });
+
+program.command('schedule-all')
+    .description('Create cloud run jobs and schedule it for all bots')
+    .action(async() => {
+        const config = getConfig()
+        await Promise.all(_.map(config.bots, (bot, botId) => {
+            return schedule(botId)
+        }))
     });
 
 program.command('browse')
