@@ -8,12 +8,14 @@ bots:
     environment:
       ALPHAPOOL_MODEL_ID: 'pf-universal'
       ALPHAPOOL_PORTFOLIO: 'universal'
+    memory: 4096
   pf-universal2:
     image: richmanbtc/alphapool-portfolio:v0.0.5
     cron: '1 * * * *'
     environment:
       ALPHAPOOL_MODEL_ID: 'pf-universal2'
       ALPHAPOOL_PORTFOLIO: 'universal2'
+    memory: 4096
   example-model-rank:
     image: richmanbtc/alphapool-model:v0.0.7
     cron: '1 * * * *'

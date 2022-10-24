@@ -79,12 +79,13 @@ async function _ensureCreateRunJobs(botId) {
     const isUpdate = await _runJobsExists(botId)
     const imageTag = getImageTag(botId)
     const env = { ...config.environment, ...(bot.environment || {}) }
+    const memory = bot.memory || 2048
     const options = _.flatten([
         isUpdate ? 'update' : 'create',
         botId,
         `--max-retries=0`,
         `--task-timeout=180s`,
-        `--memory=2048Mi`,
+        `--memory=${memory}Mi`,
         `--image="${imageTag}"`,
         `--command="${bot.command || ''}"`,
         `--args="${(bot.args || []).join(',')}"`,
