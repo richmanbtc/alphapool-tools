@@ -1,6 +1,6 @@
 const { Command } = require('commander');
 const program = new Command();
-const {schedule} = require('./schedule')
+const {schedule, deleteJobs} = require('./schedule')
 const {buildImage} = require("./build");
 const open = require('open');
 const {getConfig} = require("./config");
@@ -48,6 +48,13 @@ program.command('schedule-all')
         await Promise.all(_.map(config.bots, (bot, botId) => {
             return schedule(botId)
         }))
+    });
+
+program.command('delete')
+    .description('Delete cloud run jobs and schedule')
+    .argument('<string>', 'bot name defined in config')
+    .action((str) => {
+        deleteJobs(str)
     });
 
 program.command('browse')

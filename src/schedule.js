@@ -23,6 +23,26 @@ async function schedule(botId) {
     await _ensureCreateScheduler(botId)
 }
 
+
+async function deleteJobs(botId) {
+    if (await _runJobsExists(botId)) {
+        await _deleteRunJobs(botId)
+    }
+
+    const options = _.flatten([
+        'delete',
+        botId,
+        defaultGcloudOptions('location'),
+    ])
+
+    const command = `gcloud scheduler jobs ${options.join(' ')}`
+    console.log(command)
+    const res = await exec(command)
+
+    console.log(res.stdout)
+    console.log(res.stderr)
+}
+
 async function _ensureCreateScheduler(botId) {
     const config = getConfig();
     const bot = config.bots[botId];
@@ -64,6 +84,8 @@ async function _deleteRunJobs(botId) {
         defaultGcloudOptions(),
     ])
 
+
+
     const command = `gcloud beta run jobs ${options.join(' ')}`
     console.log(command)
     const res = await exec(command)
@@ -79,18 +101,28 @@ async function _ensureCreateRunJobs(botId) {
     const isUpdate = await _runJobsExists(botId)
     const imageTag = getImageTag(botId)
     const env = { ...config.environment, ...(bot.environment || {}) }
+    _.each(env, (value, key) => {
+        if (_.isArray(value)) {
+            env[key] = JSON.stringify(value)
+        }
+    })
+    const secrets = { ...config.secrets, ...(bot.secrets || {}) }
     const memory = bot.memory || 2048
+    const timeout = bot.timeout || 180
     const options = _.flatten([
         isUpdate ? 'update' : 'create',
         botId,
         `--max-retries=0`,
-        `--task-timeout=180s`,
+        `--task-timeout=${timeout}s`,
         `--memory=${memory}Mi`,
         `--image="${imageTag}"`,
         `--command="${bot.command || ''}"`,
         `--args="${(bot.args || []).join(',')}"`,
         `--set-cloudsql-instances="${config.cloudsqlInstances}"`,
-        `--set-env-vars="${_.map(env, (v, k) => `${k}=${v}`).join(',')}"`,
+        `--set-env-vars='^DELIM^${_.map(env, (v, k) => `${k}=${v}`).join('DELIM')}'`,
+        _.isEmpty(secrets) ?
+            [] :
+            `--set-secrets='${_.map(secrets, (v, k) => `${k}=${v}`).join(',')}'`,
         defaultGcloudOptions(),
     ])
 
@@ -114,5 +146,6 @@ async function _runJobsExists(botId) {
 }
 
 module.exports = {
-    schedule
+    schedule,
+    deleteJobs
 }
