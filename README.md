@@ -23,3 +23,8 @@ Application exec likely failed
 application failed to start: not available
 
 - I don't know what caused it, but I think it stopped happening when I added more memory.
+
+ip address
+
+- cloud run jobs instance ip address seems to be always located in us
+- ip address can be changed by https://cloud.google.com/run/docs/configuring/connecting-vpc
