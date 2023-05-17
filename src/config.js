@@ -4,11 +4,18 @@ function getConfig() {
     return readYamlEnvSync('bots.yml');
 }
 
-function defaultGcloudOptions(regionField) {
+function getRegion(botId) {
     const config = getConfig();
+    return (botId && config.bots[botId].region) || config.region
+}
+
+function defaultGcloudOptions(options) {
+    const { botId, regionField } = options || {}
+    const config = getConfig();
+    const region = getRegion(botId)
 
     return [
-        `--${regionField || 'region'}=${config.region}`,
+        `--${regionField || 'region'}=${region}`,
         `--project=${config.projectId}`,
         `--quiet`,
     ]
@@ -25,4 +32,5 @@ module.exports = {
     getConfig,
     defaultGcloudOptions,
     getImageTag,
+    getRegion,
 }

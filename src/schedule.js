@@ -1,7 +1,7 @@
 const util = require('util');
 const childProcess = require('child_process');
 const exec = util.promisify(childProcess.exec);
-const {getConfig, defaultGcloudOptions, getImageTag} = require("./config");
+const {getConfig, defaultGcloudOptions, getImageTag, getRegion} = require("./config");
 const _ = require('lodash')
 const sleep = require('sleep-promise');
 
@@ -32,7 +32,7 @@ async function deleteJobs(botId) {
     const options = _.flatten([
         'delete',
         botId,
-        defaultGcloudOptions('location'),
+        defaultGcloudOptions({ botId: botId, regionField: 'location' }),
     ])
 
     const command = `gcloud scheduler jobs ${options.join(' ')}`
@@ -52,10 +52,10 @@ async function _ensureCreateScheduler(botId) {
         'http',
         botId,
         `--schedule="${bot.cron}"`,
-        `--uri="https://${config.region}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${config.projectId}/jobs/${botId}:run"`,
+        `--uri="https://${getRegion(botId)}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${config.projectId}/jobs/${botId}:run"`,
         `--http-method=POST`,
         `--oauth-service-account-email=${config.serviceAccount}`,
-        defaultGcloudOptions('location'),
+        defaultGcloudOptions({ botId: botId, regionField: 'location' }),
     ])
 
     const command = `gcloud scheduler jobs ${options.join(' ')}`
@@ -67,7 +67,7 @@ async function _ensureCreateScheduler(botId) {
 }
 
 async function _schedulerExists(botId) {
-    const command = `gcloud scheduler jobs describe ${botId} ${defaultGcloudOptions('location').join(' ')}`
+    const command = `gcloud scheduler jobs describe ${botId} ${defaultGcloudOptions({ botId: botId, regionField: 'location' }).join(' ')}`
     try {
         console.log(command)
         await exec(command)
@@ -81,7 +81,7 @@ async function _deleteRunJobs(botId) {
     const options = _.flatten([
         'delete',
         botId,
-        defaultGcloudOptions(),
+        defaultGcloudOptions({ botId: botId }),
     ])
 
 
@@ -108,6 +108,7 @@ async function _ensureCreateRunJobs(botId) {
     })
     const secrets = { ...config.secrets, ...(bot.secrets || {}) }
     const memory = bot.memory || 2048
+    const cpu = bot.cpu || 1
     const timeout = bot.timeout || 180
     const options = _.flatten([
         isUpdate ? 'update' : 'create',
@@ -115,6 +116,7 @@ async function _ensureCreateRunJobs(botId) {
         `--max-retries=0`,
         `--task-timeout=${timeout}s`,
         `--memory=${memory}Mi`,
+        `--cpu=${cpu}`,
         `--image="${imageTag}"`,
         `--command="${bot.command || ''}"`,
         `--args="${(bot.args || []).join(',')}"`,
@@ -123,7 +125,7 @@ async function _ensureCreateRunJobs(botId) {
         _.isEmpty(secrets) ?
             [] :
             `--set-secrets='${_.map(secrets, (v, k) => `${k}=${v}`).join(',')}'`,
-        defaultGcloudOptions(),
+        defaultGcloudOptions({ botId: botId }),
     ])
 
     const command = `gcloud beta run jobs ${options.join(' ')}`
@@ -135,7 +137,7 @@ async function _ensureCreateRunJobs(botId) {
 }
 
 async function _runJobsExists(botId) {
-    const command = `gcloud beta run jobs describe ${botId} ${defaultGcloudOptions().join(' ')}`
+    const command = `gcloud beta run jobs describe ${botId} ${defaultGcloudOptions({ botId: botId }).join(' ')}`
     try {
         console.log(command)
         await exec(command)
