@@ -120,6 +120,10 @@ async function _ensureCreateRunJobs(botId) {
         `--image="${imageTag}"`,
         `--command="${bot.command || ''}"`,
         `--args="${(bot.args || []).join(',')}"`,
+        bot.vpcConnector ? [
+            `--vpc-connector=${bot.vpcConnector}`,
+            `--vpc-egress=${bot.vpcEgress || 'private-ranges-only'}`
+        ]: [],
         `--set-cloudsql-instances="${config.cloudsqlInstances}"`,
         `--set-env-vars='^DELIM^${_.map(env, (v, k) => `${k}=${v}`).join('DELIM')}'`,
         _.isEmpty(secrets) ?
