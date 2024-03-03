@@ -5,6 +5,7 @@ const {buildImage} = require("./build");
 const open = require('open');
 const {getConfig} = require("./config");
 const _ = require('lodash');
+const {pfInfo} = require("./info");
 
 console.error("Current directory:", process.cwd());
 
@@ -73,6 +74,12 @@ program.command('browse')
             open(`https://console.cloud.google.com/cloud-build/builds;region=${region}?project=${projectId}`)
             open(`https://console.cloud.google.com/cloudscheduler?project=${projectId}`)
         }
+    });
+
+program.command('pf-info')
+    .description('show portfolio model info')
+    .action(() => {
+        pfInfo()
     });
 
 program.parse();
