@@ -11,5 +11,8 @@
     "open": "^8.4.0",
     "sleep-promise": "^9.1.0",
     "yaml-env-defaults": "^1.1.5"
+  },
+  "bin": {
+    "alphapool-tools": "./cli.js"
   }
 }

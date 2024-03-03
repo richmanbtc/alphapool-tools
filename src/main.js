@@ -6,6 +6,8 @@ const open = require('open');
 const {getConfig} = require("./config");
 const _ = require('lodash');
 
+console.error("Current directory:", process.cwd());
+
 require('dotenv').config();
 
 program

@@ -1,4 +1,24 @@
 
+## install
+
+```bash
+npm link
+```
+
+## config
+
+create bots.yml in arbitrary dir
+
+## use
+
+in bots.yml directory
+
+```bash
+alphapool-tools
+```
+
+## memo
+
 docker image build
 
 - Only gcp repositories can be specified for cloud run images.
